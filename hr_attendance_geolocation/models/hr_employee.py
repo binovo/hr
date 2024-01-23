@@ -8,7 +8,7 @@ class HrEmployee(models.Model):
     _inherit = "hr.employee"
 
     @api.multi
-    def attendance_manual(self, next_action, entered_pin=False,
+    def attendance_manual(self, next_action, entered_pin=None,
                           location=False):
         res = super(HrEmployee, self.with_context(
             attendance_location=location)).attendance_manual(
