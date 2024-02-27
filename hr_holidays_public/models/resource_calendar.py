@@ -7,7 +7,7 @@ from odoo.addons.resource.models.resource import Intervals
 
 from pytz import timezone
 from datetime import datetime, time
-from dateutil import rrule
+from dateutil import rrule, relativedelta
 
 
 class ResourceCalendar(models.Model):
@@ -35,7 +35,7 @@ class ResourceCalendar(models.Model):
             # gives [2019]
             # rrule.rrule(rrule.YEARLY, dtstart=2019-12-22, until=2021-01-05)
             # gives [2019, 2020]
-            end_dt = end_dt.replace(year=end_dt.year+1)
+            end_dt = end_dt + relativedelta.relativedelta(years=1)
         for day in rrule.rrule(rrule.YEARLY, dtstart=start_dt, until=end_dt):
             lines = HrHolidaysPublic.get_holidays_list(
                 day.year, employee_id=employee_id,
