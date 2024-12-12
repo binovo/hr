@@ -3,6 +3,8 @@ odoo.define('hr_attendance_geolocation.attendances_geolocation', function (requi
 
     var MyAttendances = require('hr_attendance.my_attendances');
     var KioskConfirm = require('hr_attendance.kiosk_confirm');
+    var core = require('web.core');
+    var _t = core._t;
 
     MyAttendances.include({
         init: function (parent, action) {
@@ -18,7 +20,13 @@ odoo.define('hr_attendance_geolocation.attendances_geolocation', function (requi
                 maximumAge: 0
             };
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(self._manual_attendance.bind(self), self._getPositionError, options);
+                navigator.geolocation.getCurrentPosition(
+                    self._manual_attendance.bind(self),
+                    self._getPositionError.bind(self),
+                    options
+                );
+            } else {
+                this._getPositionError({code: 0, message: _t("Geolocation is not supported by your browser.")});
             }
         },
         _manual_attendance: function (position) {
@@ -37,7 +45,14 @@ odoo.define('hr_attendance_geolocation.attendances_geolocation', function (requi
             });
         },
         _getPositionError: function (error) {
-            console.warn('ERROR(${error.code}): ${error.message}');
+            console.warn('ERROR(' + error.code + '): ' + error.message);
+            this.do_warn(
+                _t("Geolocation Error"),
+                _t("Your location could not be obtained. Please make sure you allow access to the location in your browser so that we can clock your attendance.")
+                + " "
+                + _t("Error Code: ") + error.code
+                + _t(", Error Message: ") + error.message
+            );
         },
     });
 
@@ -63,7 +78,13 @@ odoo.define('hr_attendance_geolocation.attendances_geolocation', function (requi
                 maximumAge: 0
             };
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(self._manual_attendance.bind(self), self._getPositionError, options);
+                navigator.geolocation.getCurrentPosition(
+                    self._manual_attendance.bind(self),
+                    self._getPositionError.bind(self),
+                    options
+                );
+            } else {
+                this._getPositionError({code: 0, message: _t("Geolocation is not supported by your browser.")});
             }
         },
         _manual_attendance: function (position) {
@@ -92,7 +113,14 @@ odoo.define('hr_attendance_geolocation.attendances_geolocation', function (requi
             });
         },
         _getPositionError: function (error) {
-            console.warn('ERROR(${error.code}): ${error.message}');
+            console.warn('ERROR(' + error.code + '): ' + error.message);
+            this.do_warn(
+                _t("Geolocation Error"),
+                _t("Your location could not be obtained. Please make sure you allow access to the location in your browser so that we can clock your attendance.")
+                + " "
+                + _t("Error Code: ") + error.code
+                + _t(", Error Message: ") + error.message
+            );
         },
     });
 
