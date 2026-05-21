@@ -78,8 +78,13 @@ class HrEmployee(models.Model):
         elif vals.get("name"):
             vals["lastname"] = self.split_name(vals["name"])["lastname"]
             vals["firstname"] = self.split_name(vals["name"])["firstname"]
-        else:
-            raise ValidationError(_("No name set."))
+        elif vals.get("user_id"):
+            user = self.env["res.users"].browse(vals["user_id"])
+            if user.exists() and user.name:
+                name_split = self.split_name(user.name)
+                vals["lastname"] = name_split["lastname"]
+                vals["firstname"] = name_split["firstname"]
+                vals["name"] = self._get_name(vals.get("lastname"), vals.get("firstname"))
 
     def _prepare_vals_on_write_firstname_lastname(self, vals):
         if "firstname" in vals or "lastname" in vals:
